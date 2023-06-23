@@ -1,0 +1,98 @@
+// Define the price list and minimum charges
+const priceList = {
+  accentWall: {
+    livingRoomBedroom: {
+      traditionalNonPasted: 3.25,
+      traditionalPasted: 3.5,
+      prePasted: 3.5,
+      peelStick: 3.5,
+      grasscloth: 4,
+      commercialVinyl: 4,
+      untrimmed: 6,
+    },
+  },
+  bathroomPowderRoom: {
+    traditionalNonPasted: 3.75,
+    traditionalPasted: 4,
+    prePasted: 4,
+    peelStick: 4,
+    grasscloth: 4.5,
+    commercialVinyl: 4.5,
+    untrimmed: 7,
+  },
+  closetsKitchen: {
+    traditionalNonPasted: 3.75,
+    traditionalPasted: 4,
+    prePasted: 4,
+    peelStick: 4,
+    grasscloth: 5,
+    commercialVinyl: 5.5,
+    untrimmed: 7,
+  },
+  ceilings: {
+    traditionalNonPasted: 4.75,
+    traditionalPasted: 5,
+    prePasted: 5,
+    peelStick: 5,
+    grasscloth: 6,
+    commercialVinyl: 6.5,
+    untrimmed: 8,
+  },
+};
+
+const minimumCharges = {
+  accentWall: 300,
+  bathroom: 425,
+  powderRoom: 350,
+  closetsKitchen: 500,
+  ceilings: 450,
+};
+
+// Prompt the user for the necessary information
+const numWalls = parseInt(prompt('How many total walls do you have?'));
+const walls = [];
+
+for (let i = 0; i < numWalls; i++) {
+  const wall = {};
+
+  // Prompt for wall type
+  wall.type = prompt(`What is the type of wall ${i + 1}? (e.g., kitchen, bath, accentWall)`);
+
+  // Prompt for wall covering
+  const coveringType = prompt(`What type of covering for wall ${i + 1}? (e.g., grasscloth, commercialVinyl)`);
+  const coveringPrice = priceList[wall.type][wall.type][coveringType];
+
+  // Prompt for square footage
+  wall.squareFootage = parseFloat(prompt(`How many square feet for wall ${i + 1}?`));
+
+  wall.cost = calculateQuote(coveringPrice, wall.squareFootage);
+  walls.push(wall);
+}
+
+// Prompt for smoothing
+const smoothingRequired = confirm('Do you want smoothing for every wall, surface, or room?');
+let smoothingCost = 0;
+
+if (smoothingRequired) {
+  const totalSquareFootage = walls.reduce((total, wall) => total + wall.squareFootage, 0);
+  smoothingCost = calculateSmoothingCost(totalSquareFootage);
+}
+
+// Calculate the total quote
+let quote = walls.reduce((total, wall) => total + wall.cost, 0) + smoothingCost;
+
+// Display the final quote
+console.log(`The total quote is: $${quote.toFixed(2)}`);
+
+// Function to calculate the quote based on price per square foot and square footage
+function calculateQuote(price, squareFootage) {
+  const minimumCharge = 100;
+  const totalCost = price * squareFootage;
+  return Math.max(totalCost, minimumCharge);
+}
+
+// Function to calculate the smoothing cost based on square footage
+function calculateSmoothingCost(squareFootage) {
+  const smoothingPrice = 2.75;
+  return smoothingPrice * squareFootage;
+}
